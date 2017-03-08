@@ -9,9 +9,18 @@ int main()
     char stuID[MAX][10];
     int stuScore[MAX];  //出勤分数
     int stuAbsentNum[MAX] = {0}; // 学生的缺勤次数
-    int stuNum, i;
-
-
+    int stuNum, courseHours, i;
+    stuNum = InputInfo(stuName, stuID);
+    printf("Please input the number of lessons. \n");
+    scanf("%d", &courseHours);
+    for (i=0; i<courseHours; i++)
+    {
+        // 点名
+        RandomCall(stuName, stuID, stuAbsentNum);
+    }
+    //统计缺勤次数
+    SumScore(stuName, stuID, stuAbsentNum);
+    OutputInfo(stuName, stuID, stuScore);
 
     return 0;
 }
