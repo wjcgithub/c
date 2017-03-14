@@ -179,6 +179,26 @@ void test_fread()
     }
 }
 
+void test_random_read_file()
+{
+//    文件的随机读写是通过文件内部的指针完成的，文件从头到尾按照字节从０开始顺序编址，
+//    用以表示数据的存储位置
+
+//    使文件位置指针从新指向文件的开始位置
+//    void rewind(FILE *fp);
+//    返回当前文件位置指针（相对于文件起始位置的自己偏移量）
+//    long gtell(FILE *fp);
+//    改变文件位置指针，实现随机读写
+//    int fseek(FILE *fp, long offset, int fromwhere);
+//        将文件位置指针从fromwhere开始移动offset个字节，指示下一个要读取的数据的位置
+//        fp:       指向fopen()返回的句柄
+//        offset: 　位置指针的偏移量（字节数），long型，加l或者L
+//        fromwhere: 起始位置
+//            SEEK_SET或０　－－－　文件开始位置
+//            SEEK_CUR或1 　－－－　文件当前位置
+//            SEEK_END或2 　－－－　文件末尾
+}
+
 int main()
 {
 //   按字符读取文件
@@ -189,11 +209,14 @@ int main()
 //    test_puts_fputs();
 
 // 按行读取文件
-    test_fgets();
-    test_fputs();
+//    test_fgets();
+//    test_fputs();
 
 // 按数据块读写文件
     test_fread();
+
+// 文件的随机读写
+    test_random_read_file();
 
     return 0;
 }
