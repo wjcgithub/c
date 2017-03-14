@@ -38,7 +38,7 @@ void test_putc_fputc()
 //    int fgetc(FILE *fp);　从任意流读入一个字符　
 //    fputc(int c, stdout) 相当于　putchar(int c)
 //    getc(stdin) 相当于　getchar();
-
+//
 //    #define putchar(c) putc(c,stdout)
 //    #define getchar(c) getc(c, stdout)
 //        上面这几个都是通过宏来实现的，　一个是宏速度快，　但是宏是不能给参数设置类型的，　所以就有fputc（） fgetc（）　这种函数的处理方法可供选择
@@ -92,13 +92,13 @@ void test_read_char()
     fclose(fp);
 }
 
-void test_puts_fputs()
+void test_fgets()
 {
 //    int puts(const char *s);  将字符串s写人标准输出stdout，并在其后添加一个换行符
 //    int fputs(const char *s, FILE *fp);  将字符串s写人fp所指向的文件中
 //    与puts 相同的是：　若出现写入错误，　则返回EOF, 否则返回一个非负数
 //    与puts不同的是：　它不会自动添加换行符，除非字符串本身含有换行符
-
+//
 //    char *gets(char *s);  从标准输入流stdin读取字符串存入到＊ｓ指定的缓存区，　然后返回首地址，　读到换行符时停止
 //        容易发生缓存区溢出
 //    char *fgets(char *s, int n, FILE *fp); 从fp所指定的文件中读取字符串，最多读取n-1个字符
@@ -123,6 +123,21 @@ void test_puts_fputs()
     fclose(fp);
 }
 
+void test_fputs()
+{
+    FILE *fp;
+    char str[80];
+    if ((fp = fopen("fgets.txt", "r")) == NULL)
+    {
+        printf("\t Failure to open demo.txt!\n");
+        exit(0);
+    }
+    printf("\n");
+    fgets(str, sizeof(str), fp);
+    fputs(str, stdout);
+    fclose(fp);
+}
+
 int main()
 {
 //    testFscanf();
@@ -130,7 +145,8 @@ int main()
 //    test_write_char();
 //    test_read_char();
 //    test_puts_fputs();
-    test_puts_fputs();
+    test_fgets();
+    test_fputs();
 
     return 0;
 }
