@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1488951111 source:/home/c/example/c/randomCall/randomCall/main.c
+	<stdio.h>
+	<stdlib.h>
+
