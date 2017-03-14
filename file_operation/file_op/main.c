@@ -138,15 +138,62 @@ void test_fputs()
     fclose(fp);
 }
 
+void test_fread()
+{
+//    size_t fread(void *buffer, size_t size, size_t count, FILE *stream);
+//    从fp所指文件中读取数据块到buffer指向的内存
+//    buffer是存储数据块的内存首地址，如数组的地址
+//    size是每个数据块大小（元素的大小，字节数）
+//    count 是要读入的数据块个数，如数组元素的个数
+//    返回值num: 实际读入的数据块个数
+//        应等于count, 除非达到了文件末尾，或出现了错误
+
+//    size_t fwrite(const void *buffer, size_t size, size_t count, FILE *stream);
+//    将buffer指向的内存中的数据块写入fp所指向的文件
+//    buffer是数据块的首地址，　如数组的地址
+//    size是每个数据块的大小，（元素的大小，　字节数）
+//    count 是要写入的数据块个数，如数组元素的个数
+//    返回值num: 实际写入的数据块的个数
+//        应等于count，除非出现写入错误
+    FILE *stream;
+    char list[30];
+    int i, numread, numwrite;
+    if ((stream = fopen("fread.out", "w+")) != NULL)
+    {
+        for (i=0; i < 26; i++) {
+            list[i] = (char)('z'-i);
+        }
+        numwrite = fwrite(list, sizeof(char), 26, stream);
+        printf("Wrote %d items\n", numwrite);
+
+        fclose(stream);
+    } else {
+        printf("Problem openting the file\n");
+    }
+
+    if ( (stream = fopen("fread.out", "r+")) != NULL ) {
+        numread = fread(list, sizeof(char), 26, stream);
+        printf("Number of items read = %d\n", numread);
+        printf("content is %s\n", list);
+        fclose(stream);
+    }
+}
+
 int main()
 {
+//   按字符读取文件
 //    testFscanf();
 //    test_putc_fputc();
 //    test_write_char();
 //    test_read_char();
 //    test_puts_fputs();
+
+// 按行读取文件
     test_fgets();
     test_fputs();
+
+// 按数据块读写文件
+    test_fread();
 
     return 0;
 }
