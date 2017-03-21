@@ -7,6 +7,8 @@
 #include <dirent.h>
 #include <string.h>
 
+#define MAX_DIR_DEPTH 256
+
 void firstPwd()
 {
     char buf[1024];
@@ -78,7 +80,23 @@ ino_t get_ino_byname(char *filename)
 //根据inode-number在当前目录中查找对应的文件名
 char *find_name_byino(ino_t ino)
 {
+    DIR *dp = NULL;
+    struct dirent *dptr = NULL;
+    char *filename = NULL;
+    if (NULL == (dp = opendir("."))) {
+        fprintf("stderr", "Can not open Current Directory\n");
+        exit(-1);
+    } else {
+        while (NULL != (dptr = readdir(dp))) {
+            if (dptr->d_ino == ino) {
+                filename = strdup(dptr->d_name);
+                break;
+            }
+        }
+        closedir(dp);
+    }
 
+    return filename;
 }
 
 int main(int argc, char *argv[])
@@ -99,12 +117,47 @@ int main(int argc, char *argv[])
 
 
 //　打印目录列表内容
-    if (2 != argc) {
-        fprintf(stderr, "Usage: %s directory...\n", argv[0]);
-        exit(-1);
+//    if (2 != argc) {
+//        fprintf(stderr, "Usage: %s directory...\n", argv[0]);
+//        exit(-1);
+//    }
+//
+//    dir_content_list(argv[1]);
+
+
+// 自定义pwd
+    char *dir_stack[MAX_DIR_DEPTH];
+    unsigned current_depth = 0;
+    for (;;) {
+        //获取当前目录的ino
+        ino_t current_ino = get_ino_byname(".");
+
+        //获取当前目录父目录的ino
+        ino_t parent_ino = get_ino_byname("..");
+
+        //判断当前ino和父目录ino是否一致，如果一致则推出for循环
+        if (current_ino == parent_ino) {
+            break;
+        }
+
+        //如果不一至，继续向父目录查询
+        chdir("..");
+        dir_stack[current_depth++] = find_name_byino(current_ino);
+
+        //如果目录达到指定的深度，则报告一个错误
+        if (current_depth >= MAX_DIR_DEPTH) {
+            fprintf(stderr, "Directory trrr is too deep. \n");
+            exit(-1);
+        }
     }
 
-    dir_content_list(argv[1]);
+    //输出完整路径名
+    int i = current_depth - 1;
+    for (i = current_depth -1; i>=0; i--) {
+        fprintf(stdout, "/%s", dir_stack[i]);
+    }
+
+    fprintf("stdout", "%s\n", current_depth==0?"/":"");
 
     return 0;
 }
