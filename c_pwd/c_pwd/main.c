@@ -4,6 +4,8 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
+#include <string.h>
 
 void firstPwd()
 {
@@ -31,23 +33,78 @@ void print_file_stat(struct stat *fs)
     printf("time of last access: \t\t%s", ctime(&fs->st_atime));
     printf("time of last modification: \t\t%s", ctime(&fs->st_mtime));
     printf("time of last change: \t\t%s", ctime(&fs->st_ctime));
+}
+
+void dir_content_list(char *dir)
+{
+    DIR *dp = NULL;
+    struct dirent *dptr = NULL;
+    struct stat st;
+    char *newdir;
+    if (NULL == (dp = opendir(dir))) {
+        fprintf(stderr, "Can not open Input Directory [%s]\n", dir);
+        exit(-1);
+    } else {
+        printf("Directory [%s] Content List: \n", dir);
+//         stat(dir,&st);
+//        if (S_ISDIR(st.st_mode)) {
+//            strcpy(newdir, dir);
+//            strcat(newdir, "/");
+//            dptr = readdir(dp);
+//            strcat(newdir, dptr->d_name);
+//            printf("The new dir name is %s", newdir);
+//            dir_content_list(newdir);
+//        }
+        while (NULL != (dptr = readdir(dp))) {
+            printf("inode-number: %-10ld \t filename: %s\n", dptr->d_ino, dptr->d_name);
+        }
+    }
+
+    closedir(dp);
+}
+
+//获取文件的inode号
+ino_t get_ino_byname(char *filename)
+{
+    struct stat file_stat;
+    if (0 != stat(filename, &file_stat)) {
+        perror("stat");
+        exit(-1);
+    }
+
+    return file_stat.st_ino;
+}
+
+//根据inode-number在当前目录中查找对应的文件名
+char *find_name_byino(ino_t ino)
+{
 
 }
 
 int main(int argc, char *argv[])
 {
 //    firstPwd();
+
+
+// 打印文件信息
+//    if (2 != argc) {
+//        fprintf(stderr, "Usage: %s filename....\n", argv[0]);
+//        exit(-1);
+//    }
+//    if (0 != stat(argv[1], &file_stat)) {
+//        perror("stat");
+//        exit(-1);
+//    }
+//    print_file_stat(&file_stat);
+
+
+//　打印目录列表内容
     if (2 != argc) {
-        fprintf(stderr, "Usage: %s filename....\n", argv[0]);
+        fprintf(stderr, "Usage: %s directory...\n", argv[0]);
         exit(-1);
     }
 
-    if (0 != stat(argv[1], &file_stat)) {
-        perror("stat");
-        exit(-1);
-    }
-
-    print_file_stat(&file_stat);
+    dir_content_list(argv[1]);
 
     return 0;
 }

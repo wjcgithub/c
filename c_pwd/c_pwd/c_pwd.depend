@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1490080343 source:/home/c/example/c/c_pwd/c_pwd/main.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<time.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<dirent.h>
+	<string.h>
+
