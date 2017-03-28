@@ -18,6 +18,31 @@ bignumber_s *make_bignumber_temp(int len, int sign)
     return temp;
 }
 
+//处理数字字符串冗余的0, 即　00123 -> 123
+const char *strip_str(const char *str)
+{
+    int i = 0;
+    int len = strlen(str);
+    for (i=0; i<len-1&&str[i]=='0'; i++);
+    return str+i;
+}
+
+//将字符串数据填充到模板中
+void fill_data_fromstr(bignumber_s *n, const char *str)
+{
+    int i=0;
+    int len = n->len;
+    for (i=0; i<len; i++) {
+        int d = str[len-i-1]-'0';
+        if (d>=0 && d<=9) {
+            n->data[i] = d;
+        } else {
+            fprintf(stderr, "Invalid Number:%s\n", str);
+            exit(-1);
+        }
+    }
+}
+
 //从字符串构造一个大数
 bignumber_s *make_bignumber_fromstr(const char *str)
 {
@@ -36,31 +61,6 @@ bignumber_s *make_bignumber_fromstr(const char *str)
     //将字符串数据填充进模板中，完成大数创建
     fill_data_fromstr(temp, striped_str);
     return temp;
-}
-
-//处理数字字符串冗余的0, 即　00123 -> 123
-const char *strip_str(const char *str)
-{
-    int i = 0;
-    int len = strlen(str);
-    for (i=0; i<len-1&&str[i]=='0'; i++);
-    return str+i;
-}
-
-//将字符串数据填充到模板中
-void file_data_fromstr(bignumber_s *n, const char *str)
-{
-    int i=0;
-    int len = n->len;
-    for (i=0; i<len; i++) {
-        int d = str[len-i-1]-'0';
-        if (d>=0 && d<=9) {
-            n->data[i] = d;
-        } else {
-            fprintf(stderr, "Invalid Number:%s\n", str);
-            exit(-1);
-        }
-    }
 }
 
 //以字符串的形式打印输出一个大数
@@ -113,11 +113,13 @@ bignumber_s * calc_div(bignumber_s *a, bignumber_s *b){}
 
 int main(int argc, char *argv[])
 {
-    bignumber_s *a = make_bignumber_fromstr(argv[1]);
-    bignumber_s *b = make_bignumber_fromstr(argv[3]);
     if (argc!=4) {
         usage(argv[0]);
     }
+
+
+    bignumber_s *a = make_bignumber_fromstr(argv[1]);
+    bignumber_s *b = make_bignumber_fromstr(argv[3]);
 
     if (0 == strcmp(argv[2], "+")) {
         print_bignumber(calc_add(a,b));
