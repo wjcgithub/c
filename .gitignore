@@ -33,3 +33,5 @@
 *.su
 *.layout
 *.depend
+
+pthread/.idea/
