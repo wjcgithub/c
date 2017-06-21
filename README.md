@@ -30,8 +30,7 @@
                 gets 不保留'\n'替换为'\0'
                 fgets 保留并存储'\n'
 
-# Linux 多线程编程
-@(操作系统)[线程|clion][pthread|thread]
+
 
 ## 线程相关函数 
 ### 1. pthread_create创建线程
