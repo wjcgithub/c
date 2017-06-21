@@ -117,7 +117,6 @@ int main(int argc, char *argv[])
         usage(argv[0]);
     }
 
-
     bignumber_s *a = make_bignumber_fromstr(argv[1]);
     bignumber_s *b = make_bignumber_fromstr(argv[3]);
 

@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1490695414 source:/home/c/example/c/calc/calc/main.c
+1490697336 source:/home/c/example/c/calc/calc/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"calc.h"
 
-1490695440 /home/c/example/c/calc/calc/calc.h
+1490697346 /home/c/example/c/calc/calc/calc.h
 
