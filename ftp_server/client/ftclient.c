@@ -42,6 +42,10 @@ void print_reply(int rc)
         case 550:
             printf("550 Requested action not taken. File unavailable. \n");
             break;
+
+        default:
+            printf("response code is %d", rc);
+            break;
     }
 }
 
@@ -189,6 +193,8 @@ int ftclient_list(int sock_data, int sock_con)
 
 
 /**
+ *  Input: cmd struct with an a code and an arg
+ *  Concats code + arg into a string and sends to server
  *
  * @param cmd
  * @return
@@ -224,11 +230,13 @@ void ftclient_login()
     //Get username from user
     printf("Name: ");
     fflush(stdout);
+
     read_input(user, 256);
 
     // Send USER command to server
     strcpy(cmd.code, "USER");
     strcpy(cmd.arg, user);
+
     ftclient_send_cmd(&cmd);
 
     // Wait for go-ahead to send password
@@ -237,15 +245,17 @@ void ftclient_login()
 
     // Get password from user
     fflush(stdout);
-    char *pass = getpass("password: ");
+    char * pass = getpass("password: ");
 
     //Send PASS command to server
     strcpy(cmd.code, "PASS");
     strcpy(cmd.arg, pass);
+
     ftclient_send_cmd(&cmd);
 
     //Wait for response
     int retcode = read_reply();
+
     switch (retcode) {
         case 430:
             printf("Invalid username/password.\n");
@@ -253,8 +263,12 @@ void ftclient_login()
         case 230:
             printf("Successful login.\n");
             break;
+        case 331:
+            printf("we're ready for password");
+            break;
         default:
-            perror("error reading message from server");
+            perror("client : error reading message from server");
+            printf("code is %d",retcode);
             exit(1);
             break;
     }
@@ -310,6 +324,9 @@ int main(int argc, char * argv[])
     printf("Connected to %s. \n", host);
     print_reply(read_reply());
 
+    //Get name and password and send to server
+    ftclient_login();
+
     while (1) {    // Loop until user types quit
         //Get a command from user
         if (ftclient_read_command(buffer, sizeof buffer, &cmd) < 0) {
@@ -318,6 +335,7 @@ int main(int argc, char * argv[])
         }
 
         //Send command to server
+        printf("start to send to controll. \n");
         if (send(sock_controll, buffer, (int)strlen(buffer), 0) < 0) {
             close(sock_controll);
             exit(1);

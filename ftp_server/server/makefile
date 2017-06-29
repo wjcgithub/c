@@ -3,18 +3,19 @@ CFLAGS := -Wall -g -Os -O0
 
 SHDIR := ../common
 
-OBJS = ftclient.o $(SHDIR)/common.o
+OBJS = ftserve.o $(SHDIR)/common.o
 
-all: ftclient
+all: ftserve
 
-ftclient: $(OBJS)
+ftserve: $(OBJS)
 	@$(CC) -o $@ $(CFLAGS) $(OBJS)
 
+
 $(OBJS) : %.o: %.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY:
 clean:
-	@rm -f *.o ftclient
+	@rm -f *.o ftserve
 	@rm -f ../common/*.o
-	@echo Done cleaning
+	@echo DOne cleaning
